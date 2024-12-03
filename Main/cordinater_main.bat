@@ -1,6 +1,5 @@
 @echo off
 setlocal enabledelayedexpansion
-cd C:\
 
 :menu
 cls
@@ -11,28 +10,20 @@ echo.
 echo 1. Quick Clean (Logs + Temp)
 echo 2. Compress C-Drive
 echo 3. Empty Recycle Bin
-echo 4. Bloatware Remover
-echo 5. Disk Analysis
-echo 6. Windows Cache Cleanup
-echo 7. Browser Cache Cleanup
-echo 8. System File Check
-echo 9. Disk Defragmentation
-echo 10. Windows Update Cleanup
-echo 11. Network Reset
-echo 12. Exit
+echo 4. Windows Cache Cleanup
+echo 5. Browser Cache Cleanup
+echo 6. Windows Update Cleanup
+echo 7. Network Reset
+echo 8. Exit
 echo.
 
-choice /C 123456789ABC /N /M "Choose an option: "
+choice /C 12345678 /N /M "Choose an option: "
 
-if errorlevel 12 goto exit
-if errorlevel 11 goto NetworkReset
-if errorlevel 10 goto WindowsUpdate
-if errorlevel 9 goto Defrag
-if errorlevel 8 goto SFC
-if errorlevel 7 goto BrowserClean
-if errorlevel 6 goto WinCache
-if errorlevel 5 goto DiskAnalysis
-if errorlevel 4 goto Debloat
+if errorlevel 8 goto exit
+if errorlevel 7 goto NetworkReset
+if errorlevel 6 goto WindowsUpdate
+if errorlevel 5 goto BrowserClean
+if errorlevel 4 goto WinCache
 if errorlevel 3 goto Trash
 if errorlevel 2 goto Compress
 if errorlevel 1 goto Clean
@@ -70,7 +61,6 @@ echo Cleaning Temporary Files...
 del /s /f /q "%TEMP%\*.*" 2>nul
 del /s /f /q "%SystemRoot%\Temp\*.*" 2>nul
 del /s /f /q "%SystemRoot%\Prefetch\*.*" 2>nul
-del /s /f /q "*\Temp\*" 2>nul
 del /s /q /f *.log *.dmp *.bak *.tmp *.old 2>nul
 
 call :GetSpace
@@ -109,27 +99,6 @@ call :GetSpace
 set final=!space!
 set /a saved=final-initial
 call :ShowSpace
-pause
-goto menu
-
-:Debloat
-cls
-echo Running Bloatware Remover...
-if exist "C:\Kayden\Kleaner\Main\10AppsManager.exe" (
-    start "" "C:\Kayden\Kleaner\Main\10AppsManager.exe"
-    echo Started Bloatware Removal Tool
-) else (
-    echo Bloatware removal tool not found.
-)
-pause
-goto menu
-
-:DiskAnalysis
-cls
-echo Current Disk Space:
-echo.
-powershell -Command "$disk = Get-WmiObject Win32_LogicalDisk -Filter 'DeviceID=''C:'''; [PSCustomObject]@{Drive='C:'; 'Size(GB)'=[math]::Round($disk.Size/1GB,2); 'Free(GB)'=[math]::Round($disk.FreeSpace/1GB,2); 'Free(MB)'=[math]::Round($disk.FreeSpace/1MB,2); 'Free(KB)'=[math]::Round($disk.FreeSpace/1KB,2)} | Format-List"
-echo.
 pause
 goto menu
 
@@ -177,25 +146,6 @@ call :GetSpace
 set final=!space!
 set /a saved=final-initial
 call :ShowSpace
-pause
-goto menu
-
-:SFC
-cls
-echo Running System File Check...
-echo This may take several minutes...
-echo.
-sfc /scannow
-echo.
-pause
-goto menu
-
-:Defrag
-cls
-echo Running Disk Defragmentation...
-echo.
-defrag C: /A /V
-echo.
 pause
 goto menu
 
